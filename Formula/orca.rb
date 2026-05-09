@@ -1,0 +1,49 @@
+class Orca < Formula
+  desc "CLI to run the Orca local backend stack for AI coding sessions"
+  homepage "https://github.com/vcashwin/orca"
+  url "https://github.com/vcashwin/orca/releases/download/v0.1.0/orca-cli-0.1.0.tar.gz"
+  sha256 "7366ab74ae9bb1fc92675262057a83c29ed0d2a600be76b40690a13ab1d854ac"
+  version "0.1.0"
+  license "MIT"
+
+  depends_on "bash"
+  depends_on "curl"
+  depends_on "jq"
+  depends_on cask: "docker"
+  depends_on cask: "vcashwin/orca/orca-app"
+
+  def install
+    pkgshare.install "docker-compose.yml"
+
+    # Inject the brew-managed compose path into the CLI so first-run can seed it.
+    inreplace "bin/orca", 'BREW_COMPOSE_SRC="${BREW_COMPOSE_SRC:-}"',
+              %Q(BREW_COMPOSE_SRC="${BREW_COMPOSE_SRC:-#{pkgshare}/docker-compose.yml}")
+
+    # Default the image coordinates so 'docker compose pull' resolves correctly.
+    inreplace "bin/orca", '#!/usr/bin/env bash',
+              %Q(#!/usr/bin/env bash\nexport ORCA_IMAGE_REGISTRY="${ORCA_IMAGE_REGISTRY:-ghcr.io/vcashwin/orca}"\nexport ORCA_VERSION="${ORCA_VERSION:-#{version}}")
+
+    bin.install "bin/orca"
+  end
+
+  def caveats
+    <<~EOS
+      Orca is installed. To get started:
+
+        orca up
+
+      This will:
+        - Start Docker Desktop if it's not already running
+        - Pull the Orca backend + worker images (first run only, ~1–2 min)
+        - Start Postgres, Redis, and the Orca backend
+        - Launch the Orca desktop app
+
+      Resources live in: ~/.orca
+      Tear down with:    orca stop
+    EOS
+  end
+
+  test do
+    assert_match "Usage: orca", shell_output("#{bin}/orca --help")
+  end
+end

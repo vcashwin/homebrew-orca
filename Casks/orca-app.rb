@@ -8,6 +8,8 @@ cask "orca-app" do
   homepage "https://github.com/vcashwin/orca"
 
   depends_on macos: ">= :ventura"
+  depends_on formula: "vcashwin/orca/orca"
+  depends_on cask: "docker"
 
   app "Orca.app"
 

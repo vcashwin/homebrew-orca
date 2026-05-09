@@ -9,8 +9,6 @@ class Orca < Formula
   depends_on "bash"
   depends_on "curl"
   depends_on "jq"
-  depends_on cask: "docker"
-  depends_on cask: "vcashwin/orca/orca-app"
 
   def install
     pkgshare.install "docker-compose.yml"
@@ -28,7 +26,13 @@ class Orca < Formula
 
   def caveats
     <<~EOS
-      Orca is installed. To get started:
+      The Orca CLI is installed. For the full beta stack you also need
+      Docker Desktop and the Orca desktop app:
+
+        brew install --cask docker
+        brew install --cask vcashwin/orca/orca-app
+
+      Then run:
 
         orca up
 

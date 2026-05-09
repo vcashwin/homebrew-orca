@@ -14,8 +14,17 @@ cask "orca-app" do
   app "Orca.app"
 
   postflight do
+    # Without an Apple Developer ID we ship an ad-hoc signed build, which
+    # macOS Sequoia/Tahoe Gatekeeper rejects with "Check with the developer
+    # to make sure Orca works with this version of macOS" on first launch.
+    # Strip every extended attribute (covers com.apple.quarantine and any
+    # provenance metadata Gatekeeper may consult) and re-apply an ad-hoc
+    # signature so the bundle's integrity matches its current contents.
     system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Orca.app"],
+                   args: ["-cr", "#{appdir}/Orca.app"],
+                   sudo: false
+    system_command "/usr/bin/codesign",
+                   args: ["--force", "--deep", "--sign", "-", "#{appdir}/Orca.app"],
                    sudo: false
   end
 

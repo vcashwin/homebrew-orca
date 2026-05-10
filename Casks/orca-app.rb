@@ -9,9 +9,29 @@ cask "orca-app" do
 
   depends_on macos: ">= :ventura"
   depends_on formula: "vcashwin/orca/orca"
-  depends_on cask: "docker"
 
   app "Orca.app"
+
+  preflight do
+    # Docker Desktop is a runtime requirement, but users frequently install it
+    # from docker.com instead of via brew. A hard `depends_on cask: "docker"`
+    # would refuse to install in that case (or try to reinstall Docker on top).
+    # Detect any existing Docker.app in /Applications or ~/Applications; if
+    # none is present, install it via brew so the user gets a working stack
+    # without needing a second command.
+    docker_paths = [
+      "/Applications/Docker.app",
+      File.expand_path("~/Applications/Docker.app")
+    ]
+    unless docker_paths.any? { |p| File.directory?(p) }
+      ohai "Docker Desktop not found — installing via 'brew install --cask docker'"
+      system_command "#{HOMEBREW_PREFIX}/bin/brew",
+                     args: ["install", "--cask", "docker"],
+                     print_stdout: true,
+                     print_stderr: true,
+                     sudo: false
+    end
+  end
 
   postflight do
     # Without an Apple Developer ID we ship an ad-hoc signed build, which

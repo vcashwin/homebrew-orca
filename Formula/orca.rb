@@ -1,9 +1,9 @@
 class Orca < Formula
   desc "CLI to run the Orca local backend stack for AI coding sessions"
   homepage "https://github.com/vcashwin/orca"
-  url "https://github.com/vcashwin/orca-releases/releases/download/v0.1.4/orca-cli-0.1.4.tar.gz"
-  sha256 "45618c20c1388f2865b4aa038143121aceab2742915870fd6e843526aee569b8"
-  version "0.1.4"
+  url "https://github.com/vcashwin/orca-releases/releases/download/v0.1.5/orca-cli-0.1.5.tar.gz"
+  sha256 "1e49c45e6be1b7d96a4dc0bfec6501b73bd2d1f4b3cfb3761b36595b1c206741"
+  version "0.1.5"
   license "MIT"
 
   depends_on "bash"

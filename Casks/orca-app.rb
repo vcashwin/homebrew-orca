@@ -1,6 +1,6 @@
 cask "orca-app" do
-  version "0.1.13"
-  sha256 "0153e329bd808679dd64bf2ae6e9b11c9add97ba148bec2cc89c709ebfff0c16"
+  version "0.1.14"
+  sha256 "efc034caa12ab2f28ab242d1e3cadc922997d54a69295e6945f50db33234e91f"
 
   url "https://github.com/vcashwin/orca-releases/releases/download/v#{version}/Orca-#{version}.dmg"
   name "Orca"
